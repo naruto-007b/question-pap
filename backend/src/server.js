@@ -36,9 +36,12 @@ app.get('/api/health/db', async (req, res) => {
 });
 
 const authRoutes = require('./routes/auth');
+const courseRoutes = require('./routes/courses');
+const { verifyToken } = require('./middleware/auth');
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/courses', verifyToken, courseRoutes);
 
 // 404 handler - must come before error handler
 app.use((req, res, next) => {

@@ -1,9 +1,12 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { CourseProvider } from './context/CourseContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
-import DashboardPage from './pages/DashboardPage';
+import Dashboard from './pages/Dashboard';
+import CourseCreationPage from './pages/CourseCreationPage';
+import CourseDetailsPage from './pages/CourseDetailsPage';
 
 const RedirectRoute = () => {
   const { user, loading } = useAuth();
@@ -26,19 +29,37 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <Routes>
-          <Route path="/" element={<RedirectRoute />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+        <CourseProvider>
+          <Routes>
+            <Route path="/" element={<RedirectRoute />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/course/new"
+              element={
+                <ProtectedRoute>
+                  <CourseCreationPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/course/:courseId"
+              element={
+                <ProtectedRoute>
+                  <CourseDetailsPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </CourseProvider>
       </AuthProvider>
     </Router>
   );
