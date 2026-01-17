@@ -35,27 +35,37 @@ app.get('/api/health/db', async (req, res) => {
   }
 });
 
-// Routes will be added here
-// app.use('/api/auth', require('./routes/auth'));
-// app.use('/api/courses', require('./routes/courses'));
-// app.use('/api/questions', require('./routes/questions'));
-// app.use('/api/papers', require('./routes/papers'));
+const authRoutes = require('./routes/auth');
+
+// Routes
+app.use('/api/auth', authRoutes);
 
 // 404 handler - must come before error handler
 app.use((req, res, next) => {
   res.status(404).json({ 
-    status: 'error', 
-    message: 'Route not found' 
+    error: {
+      code: 'NOT_FOUND',
+      message: 'Route not found'
+    }
   });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    status: 'error', 
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Something went wrong!';
+  const code = err.code || 'INTERNAL_SERVER_ERROR';
+
+  if (process.env.NODE_ENV === 'development' || statusCode === 500) {
+    console.error(err.stack);
+  }
+
+  res.status(statusCode).json({ 
+    error: {
+      code,
+      message,
+      ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    }
   });
 });
 
