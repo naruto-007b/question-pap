@@ -115,7 +115,8 @@ CREATE TABLE IF NOT EXISTS paper_questions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     paper_id UUID NOT NULL REFERENCES generated_papers(id) ON DELETE CASCADE,
     question_id UUID NOT NULL REFERENCES questions(id) ON DELETE RESTRICT,
-    position INT NOT NULL
+    position INT NOT NULL,
+    option_label VARCHAR(1)
 );
 
 CREATE INDEX idx_paper_questions_paper_id ON paper_questions(paper_id);
@@ -148,20 +149,16 @@ INSERT INTO blueprints (name, structure, is_default) VALUES (
     'Default Institutional Blueprint',
     '{
         "part_a": {
-            "question_count": 10,
-            "marks_per_question": 2,
-            "total_marks": 20,
-            "type": "short_answer",
-            "description": "Answer ALL questions"
+            "num_questions": 5,
+            "marks": 2,
+            "co_distribution": [1, 2, 3, 4, 5]
         },
-        "part_b": {
-            "question_count": 5,
-            "questions_to_answer": 3,
-            "marks_per_question": 10,
-            "total_marks": 30,
-            "type": "long_answer",
-            "description": "Answer any THREE questions"
-        }
+        "part_b": [
+            { "group": 6, "marks": 5, "num_options": 2, "co": 6 },
+            { "group": 7, "marks": 5, "num_options": 2, "co": 6 },
+            { "group": 8, "marks": 6, "num_options": 2, "co": 6 },
+            { "group": 9, "marks": 8, "num_options": 2, "co": 6 }
+        ]
     }'::jsonb,
     TRUE
 ) ON CONFLICT DO NOTHING;

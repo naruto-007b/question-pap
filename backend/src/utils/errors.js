@@ -44,11 +44,19 @@ class ConflictError extends AppError {
   }
 }
 
+class InsufficientQuestionsError extends AppError {
+  constructor(message) {
+    super(message || 'Insufficient questions available', 400);
+    this.code = 'INSUFFICIENT_QUESTIONS_ERROR';
+  }
+}
+
 module.exports = {
   AppError,
   ValidationError,
   AuthenticationError,
   AuthorizationError,
   NotFoundError,
-  ConflictError
+  ConflictError,
+  InsufficientQuestionsError
 };
